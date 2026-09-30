@@ -2,20 +2,52 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Frontend 1.0</title>
+    <title>Frontend 2.0</title>
 </head>
 <body>
 
-    <h1>Версия 1.0</h1>
+    <h1>Версия 2.0</h1>
 
-    <input type="text" id="text" placeholder="Введите данные">
-    <button id="sendButton">Отправить</button>
+    <!-- Первое поле -->
+    <input type="text" id="text1" placeholder="Введите данные">
+    <button id="sendButton1">Отправить</button>
+
+    <br><br>
+
+    <!-- Второе поле -->
+    <input type="text" id="text2" placeholder="Введите дополнительные данные">
+    <button id="sendButton2">Отправить</button>
+
+    <br><br>
+
+    <!-- Третье поле для вывода содержимого файла -->
+    <textarea id="result"
+          rows="10"
+          cols="40"
+          placeholder="Данные из файла"
+          readonly></textarea>
+    <button id="getButton">Получить</button>
+
 
     <script>
-        const textInput = document.getElementById("text");
-        const sendButton = document.getElementById("sendButton");
 
-        sendButton.addEventListener("click", async () => {
+        // Первое поле
+        const text1 = document.getElementById("text1");
+        const sendButton1 = document.getElementById("sendButton1");
+
+
+        // Второе поле
+        const text2 = document.getElementById("text2");
+        const sendButton2 = document.getElementById("sendButton2");
+
+
+        // Третье поле
+        const result = document.getElementById("result");
+        const getButton = document.getElementById("getButton");
+
+
+        // Первая кнопка — отправка данных
+        sendButton1.addEventListener("click", async () => {
 
             try {
                 const response = await fetch(
@@ -26,7 +58,7 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            text: textInput.value
+                            text: text1.value
                         })
                     }
                 );
@@ -39,6 +71,52 @@
                 alert("Ошибка: " + error);
             }
         });
+
+
+        // Вторая кнопка — отправка дополнительных данных
+        sendButton2.addEventListener("click", async () => {
+
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/data",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            text: text2.value
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                alert(data.message);
+
+            } catch (error) {
+                alert("Ошибка: " + error);
+            }
+        });
+
+
+        // Третья кнопка — получение данных из файла
+        getButton.addEventListener("click", async () => {
+
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/data"
+                );
+
+                const data = await response.json();
+
+                result.value = data.data;
+
+            } catch (error) {
+                result.value = "Ошибка: " + error;
+            }
+        });
+
     </script>
 
 </body>
